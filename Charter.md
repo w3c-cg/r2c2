@@ -9,27 +9,27 @@ description of the group\'s scope and deliverables.}*
 on what to include and recommended text. Please remember to remove the
 notes in your specific charter.}*
 
-# \[DRAFT\] [*{TBD: name}*]{.remove} Community Group Charter
+# \[DRAFT\] [*{TBD: name}*] Community Group Charter
 
-[*{TBD: remove next sentence before submitting for approval}*]{.remove}
+[*{TBD: remove next sentence before submitting for approval}*]
 This Charter is work in progress. To submit feedback, please use
-[*{TBD:GitHub repository URL}*]{.remove} Issues where Charter is being
+[*{TBD:GitHub repository URL}*] Issues where Charter is being
 developed.
 
--   This Charter: [*{TBD: URI}*]{.remove}
--   Previous Charter: [*{TBD: URI}*]{.remove}
+-   This Charter: [*{TBD: URI}*]
+-   Previous Charter: [*{TBD: URI}*]
 -   Start Date: [*{TBD: date the charter takes effect, estimate if not
     known. Update this if the charter is revised and include a link to
-    the previous version of the charter.}*]{.remove}
+    the previous version of the charter.}*]
 -   Last Modifed: [*{TBD: If the system does not automatically provide
     information about the date of the last modification, it can be
-    useful to include that in the charter.}*]{.remove}
+    useful to include that in the charter.}*]
 
 ## Goals
 
 [*{TBD: describe the mission and goals of the Community Group. This
 should be a brief description describing the reason the group has been
-formed.}*]{.remove}
+formed.}*]
 
 ## Scope of Work
 
