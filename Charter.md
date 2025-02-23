@@ -153,7 +153,7 @@ or to a GitHub issue if the group uses GitHub.
 
 This group will seek to make decisions where there is consensus, as described in this section.
 
-### Work item owner
+### Work item owners
 
 * Every work item (crate or report) worked on by the Community Group will have a list of owners which will always include the Chairs.
 * This list of owners will be recorded using GitHub's [CODEOWNERS] mechanism.
@@ -176,7 +176,7 @@ This group will seek to make decisions where there is consensus, as described in
 ### Merging pull-requests
 
 * Every Community Group participant will have [write access] to the group's GitHub repository,
-  but merging a pull-request will require approval by at least two owners of the affected work item.
+  but merging a pull-request will require approval by at least two [owners](#work-item-owners) of the affected work item.
 * To ensure the applicability of the rule above,
   pull-requests spanning multiple work items are strongly discouraged,
   but the Chairs may decide to allow them on a per-case basis.
@@ -252,5 +252,5 @@ process or rules for amending the charter.
 [pull-request hack]: https://felixge.de/2013/03/11/the-pull-request-hack/
 [Section 5.2]: https://www.w3.org/policies/process/20231103/#consensus-building
 [crates.io]: https://crates.io/
-[Final Community Group Report]: 
+[Final Community Group Report]: https://www.w3.org/community/about/faq/#how-do-we-publish-a-report
 
