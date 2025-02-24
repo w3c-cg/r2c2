@@ -194,6 +194,8 @@ This group will seek to make decisions where there is consensus, as described in
   the Chairs assess consensus based on the feedback on the pull-request,
   and record a group decision on GitHub, following [Section 5.2] of the W3C process,
   and take the appropriate action to implement the decision.
+* For releasing a crate where only the [PATCH version](https://semver.org) is changed (i.e. the only changes compared to the previous release are backward compatible bug fixes), the delay above can be reduced to one week.
+* A publication request fixing a known security issue can be accepted by the Chairs without any delay, provided that the new release only includes the fix, to the exclusion of any other pull-request merged since the last release.```
 
 It is the Chairs\' responsibility to ensure that the decision process is
 fair, respects the consensus of the CG, and does not unreasonably favour
