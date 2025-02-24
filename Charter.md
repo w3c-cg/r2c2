@@ -64,7 +64,7 @@ The group may produce other Community Group Reports within the scope of
 this charter but that are not Specifications, for instance use cases,
 requirements, or white papers.
 
-### Test Suites and Other Software {#test-suites}
+### Test Suites and Other Software
 
 *{TBD: If there are no plans to create a test suite or other software,
 please state that and remove the following paragraph. If Github is not
@@ -75,12 +75,12 @@ The group MAY produce test suites to support the Specifications. Please
 see the GitHub LICENSE file for test suite contribution licensing
 information.
 
-## Dependencies or Liaisons {#liaisons}
+## Dependencies or Liaisons
 
 *{TBD: List any significant dependencies on other groups (inside or
 outside W3C) or materials. }*
 
-## Community and Business Group Process {#process}
+## Community and Business Group Process
 
 The group operates under the [Community and Business Group
 Process](https://www.w3.org/community/about/process/). Terms in this
@@ -96,20 +96,20 @@ with the following understanding: W3C will seek and expect an
 organizational commitment under the CLA starting with the individual\'s
 first request to make a contribution to a group
 [Deliverable](#deliverables). The section on [Contribution
-Mechanics](#contrib) describes how W3C expects to monitor these
+Mechanics](#contribution-mechanics) describes how W3C expects to monitor these
 contribution requests.
 
 The [W3C Code of Ethics and Professional
 Conduct](https://www.w3.org/Consortium/cepc/) applies to participation
 in this group.
 
-## Work Limited to Charter Scope {#worklimit}
+## Work Limited to Charter Scope
 
 The group will not publish Specifications on topics other than those
 listed under [Specifications](#specifications) above. See below for [how
-to modify the charter](#charter-change).
+to modify the charter](#amendments-to-this-charter).
 
-## Contribution Mechanics {#contrib}
+## Contribution Mechanics
 
 Substantive Contributions to Specifications can only be made by
 Community Group Participants who have agreed to the [W3C Community
@@ -148,7 +148,7 @@ Meetings may be restricted to Community Group participants, but a public
 summary or minutes must be posted to the group\'s public mailing list,
 or to a GitHub issue if the group uses GitHub.
 
-## Decision Process {#decision}
+## Decision Process
 
 If the decision policy is documented somewhere, update this section
 accordingly to link to it.
@@ -186,7 +186,7 @@ It is the Chairs\' responsibility to ensure that the decision process is
 fair, respects the consensus of the CG, and does not unreasonably favour
 or discriminate against any group participant or their employer.
 
-## Chair Selection {#chairs}
+## Chair Selection
 
 Participants in this group choose their Chair(s) and can replace their
 Chair(s) at any time using whatever means they prefer. However, if 5
@@ -211,10 +211,10 @@ Participants dissatisfied with the outcome of an election may ask the
 Community Development Lead to intervene. The Community Development Lead,
 after evaluating the election, may take any action including no action.
 
-## Amendments to this Charter {#charter-change}
+## Amendments to this Charter
 
 The group can decide to work on a proposed amended charter, editing the
-text using the [Decision Process](#decision) described above. The
+text using the [Decision Process](#decision-process) described above. The
 decision on whether to adopt the amended charter is made by conducting a
 30-day vote on the proposed new charter. The new charter, if approved,
 takes effect on either the proposed date in the charter itself, or 7
