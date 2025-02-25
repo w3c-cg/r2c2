@@ -53,13 +53,17 @@ For example, the Community Group may produce a crate for parsing and resolving I
 The main deliverables of the community group are Rust [library crates],
 which should eventually be published on the standard repository https://crates.io/.
 
+The public API of the code will be extensively documented using
+[doc comments](https://doc.rust-lang.org/reference/comments.html#doc-comments),
+and will include practical working examples.
+
 ### Specifications
 
 No Specifications will be produced under the current charter.
 
 ### Non-Normative Reports
 
-The community group MAY produce a user manual, or other kind of documentation,
+The community group may produce a user manual, or other kind of documentation,
 for the produced crates.
 
 <!-- covered by Rust Crates above
