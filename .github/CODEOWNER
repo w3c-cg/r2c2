@@ -1,0 +1,13 @@
+# The charter (/Charter.md) of the community groups (CG) defines the rules encoded below.
+#
+# See https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#example-of-a-codeowners-file
+# for an example of the CODEOWNERS file syntax.
+
+# CG chairs own the whole repository -- and in particular of the CODEOWNERS file itself.
+*       @pchampin @Tpt
+
+# Owners of the /dummy work-item
+/dummy  @pchampin @Tpt # ...
+
+# Owners of another work item
+# ...
