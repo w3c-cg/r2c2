@@ -1,69 +1,72 @@
-*{TBD: This is a draft template that Community or Business Groups MAY
-choose to use for their Group Charter. You may edit your charter to
-remove or change the text provided here. Community Groups SHOULD have
-charters as a way to build shared understanding within a group about
-activities, and to attract new participants who appreciate a clear
-description of the group\'s scope and deliverables.}*
-
-*{TBD: The charter sections below include notes (marked with ï¿½{TBDï¿½)
-on what to include and recommended text. Please remember to remove the
-notes in your specific charter.}*
-
-# \[DRAFT\] [*{TBD: name}*] Community Group Charter
+# DRAFT RDF Rust Common Crates Community Group Charter
 
 [*{TBD: remove next sentence before submitting for approval}*]
-This Charter is work in progress. To submit feedback, please use
-[*{TBD:GitHub repository URL}*] Issues where Charter is being
-developed.
+This Charter is work in progress. To submit feedback, please
+submit an issue to https://github.com/w3c-cg/r2c2/ .
 
--   This Charter: [*{TBD: URI}*]
--   Previous Charter: [*{TBD: URI}*]
--   Start Date: [*{TBD: date the charter takes effect, estimate if not
-    known. Update this if the charter is revised and include a link to
-    the previous version of the charter.}*]
--   Last Modifed: [*{TBD: If the system does not automatically provide
-    information about the date of the last modification, it can be
-    useful to include that in the charter.}*]
+-   This Charter: https://github.com/w3c-cg/r2c2/blob/main/Charter.md
+-   Previous Charter: N/A
+-   Start Date: 2024-02-01 [*{TBD estimation}*]
+-   Last Modified: (see [github history](https://github.com/w3c-cg/r2c2/commits/main/Charter.md))
 
 ## Goals
 
-[*{TBD: describe the mission and goals of the Community Group. This
-should be a brief description describing the reason the group has been
-formed.}*]
+The mission of the RDF Rust Common Crates (<abbr>R2C2</abbr>)
+Community Group is to develop a **common API** for working with [RDF] in
+[Rust], published as a set of [library crates].
+The goal is to improve the interoperability of the RDF ecosystem in Rust.
 
 ## Scope of Work
 
-*{TBD: Describe topics that are in scope. For specifications that the CLA
-patent section applies to, it is helpful to describe the scope in a way
-that it is clear what types of technologies will be defined in
-specifications, as opposed to adoption by reference or underlying
-technology not defined in the proposed spec. Key use cases are often
-helpful in describing scope. If no specifications will be defined in the
-group that the CLA patent section applies to, the charter should clearly
-state that. A clear scope is particularly important where patent
-licensing obligations may apply.}*
+The common API developed by the Community Group will be defined as a set of traits and/or lightweight type,
+that other crates are encouraged to implement and reuse,
+so that data values produced by an implementation can be reused by another one.
+
+For example, the triples produced by a [Turtle]
+parser, provided that they implement a trait defined by this Community Group,
+could be ingested by any independently developed implementation of a graph store.
+Similarly, if the latter implements the appropriate traits,
+it could be checked by any independently developed [SHACL] validator.
+
+As much as possible,
+the crates developed by the Community Group should aim at fulfilling the
+*[zero-cost abstraction]* motto:
+the provided traits should ideally be generic enough,
+to be directly implementable by any specific implementation,
+regardless of its internal design
+(as opposed to requiring a [wrapper type]).
+However, overly generic code can be hard too use in practice,
+so the Community Group will have to strike a balance between genericity and usability.
+
+The Community Group may also develop utility [library crates], i.e.,
+crates providing common types or functions expected to be pervasively used in the implementations of the common API.
+For example, the Community Group may produce a crate for parsing and resolving IRIs.
 
 ### Out of Scope
 
-*{TBD: Identify topics known in advance to be out of scope}*
+* develop an complete implementation of RDF-related standards
 
 ## Deliverables
 
+### Rust Crates
+
+The main deliverables of the community group are Rust [library crates],
+which should eventually be published on the standard repository https://crates.io/.
+
+The public API of the code will be extensively documented using
+[doc comments](https://doc.rust-lang.org/reference/comments.html#doc-comments),
+and will include practical working examples.
+
 ### Specifications
 
-*{TBD: Provide a brief description of each specification the group plans
-to produce. Where an estimate is possible, it can be useful to provide
-an estimated schedule for key deliverables. As described below, the
-group may later modify the charter deliverables. if no specifications,
-include: \"No Specifications will be produced under the current
-charter.\"}*
+No Specifications will be produced under the current charter.
 
 ### Non-Normative Reports
 
-The group may produce other Community Group Reports within the scope of
-this charter but that are not Specifications, for instance use cases,
-requirements, or white papers.
+The community group may produce a user manual, or other kind of documentation,
+for the produced crates.
 
+<!-- covered by Rust Crates above
 ### Test Suites and Other Software
 
 *{TBD: If there are no plans to create a test suite or other software,
@@ -74,11 +77,17 @@ being used link to your LICENSE.md file in the next paragraph.}*
 The group MAY produce test suites to support the Specifications. Please
 see the GitHub LICENSE file for test suite contribution licensing
 information.
+-->
 
 ## Dependencies or Liaisons
 
-*{TBD: List any significant dependencies on other groups (inside or
-outside W3C) or materials. }*
+* the [RDF Javascript Libraries Community Group] has a similar goal to this Community Group,
+  applied to the Javascript programming language.
+  Interaction between the two groups could be mutually valuable,
+  to share experience and lessons learned.
+* [all projects](https://github.com/search?q=rdf+language%3ARust+pushed%3A%3E2024-01-01+&type=repositories)
+  implementing RDF (or related standards) is a potential candidate for implementing the R2C2 traits.
+  The Community Group will strive to include the maintainers of these project in the discussions.
 
 ## Community and Business Group Process
 
@@ -103,11 +112,13 @@ The [W3C Code of Ethics and Professional
 Conduct](https://www.w3.org/Consortium/cepc/) applies to participation
 in this group.
 
+<!-- NOT RELEVANT AS WE HAVE NO DELIVERABLE -- insert again if the charter is modified to add specifications
 ## Work Limited to Charter Scope
 
 The group will not publish Specifications on topics other than those
 listed under [Specifications](#specifications) above. See below for [how
 to modify the charter](#amendments-to-this-charter).
+-->
 
 ## Contribution Mechanics
 
@@ -116,22 +127,16 @@ Community Group Participants who have agreed to the [W3C Community
 Contributor License Agreement
 (CLA)](https://www.w3.org/community/about/process/cla/).
 
-Specifications created in the Community Group must use the [W3C Software
+Deliverables created in the Community Group must use the [W3C Software
 and Document
 License](http://www.w3.org/Consortium/Legal/2015/copyright-software-and-document).
-All other documents produced by the group should use that License where
-possible.
-
-*{TBD: if CG doesn\'t use GitHub replace the remaining paragraphs in this
-section with: \"All Contributions are made on the groups public mail
-list or public contrib list\"}*
 
 Community Group participants agree to make all contributions in the
-GitHub repo the group is using for the particular document. This may be
+GitHub repository the group is using for the particular source code or document. This may be
 in the form of a pull request (preferred), by raising an issue, or by
 adding a comment to an existing issue.
 
-All Github repositories attached to the Community Group must contain a
+All GitHub repositories attached to the Community Group must contain a
 copy of the
 [CONTRIBUTING](https://github.com/w3c/licenses/blob/master/CG-CONTRIBUTING.md)
 and [LICENSE](https://github.com/w3c/licenses/blob/master/CG-LICENSE.md)
@@ -150,37 +155,51 @@ or to a GitHub issue if the group uses GitHub.
 
 ## Decision Process
 
-If the decision policy is documented somewhere, update this section
-accordingly to link to it.
+This group will seek to make decisions where there is consensus, as described in this section.
 
-This group will seek to make decisions where there is consensus. Groups
-are free to decide how to make decisions (e.g. Participants who have
-earned Committer status for a history of useful contributions assess
-consensus, or the Chair assesses consensus, or where consensus isn\'t
-clear there is a Call for Consensus \[CfC\] to allow multi-day online
-feedback for a proposed course of action). It is expected that
-participants can earn Committer status through a history of valuable
-contributions as is common in open source projects. After discussion and
-due consideration of different opinions, a decision should be publicly
-recorded (where GitHub is used as the resolution of an Issue).
+### Work item owners
 
-If substantial disagreement remains (e.g. the group is divided) and the
-group needs to decide an Issue in order to continue to make progress,
-the Committers will choose an alternative that had substantial support
-(with a vote of Committers if necessary). Individuals who disagree with
-the choice are strongly encouraged to take ownership of their objection
-by taking ownership of an alternative fork. This is explicitly allowed
-(and preferred to blocking progress) with a goal of letting
-implementation experience inform which spec is ultimately chosen by the
-group to move ahead with.
+* Every work item (crate or report) worked on by the Community Group will have a list of owners which will always include the Chairs.
+* This list of owners will be recorded using GitHub's [CODEOWNERS] mechanism.
+* Only the Chairs are the owners of the CODEOWNERS file.
+* Any Community Group participant can ask to be promoted owner of a work item once a pull-request they have submitted on this work item is merged
+  (this rule is loosely inspired by the [pull-request hack]).
+* The Chairs may demote an owner of a work item who has not contributed (with pull-requests or reviews) to that item in the past year.
 
-Any decisions reached at any meeting are tentative and should be
-recorded in a GitHub Issue for groups that use GitHub and otherwise on
-the group\'s public mail list. Any group participant may object to a
-decision reached at an online or in-person meeting within 7 days of
-publication of the decision provided that they include clear technical
-reasons for their objection. The Chairs will facilitate discussion to
-try to resolve the objection according to this decision process.
+### New work item
+
+* Any Community Group participant may propose a new work item (crate or report) by making a pull-request on the Community Group's GitHub repository
+  with the label `new-work-item`, which constitutes a call for consensus.
+* No less than two weeks after the pull-request was posted,
+  the Chairs assess consensus based on the feedback on the pull-request,
+  and record a group decision on GitHub, following [Section 5.2] of the W3C process.
+* If the decision is to accept the new work item, the Chairs merge the pull-request and promote its author owner of the new work item.
+* Regardless of the consensus of its participant, the Community Group can not accept a work item that is not in its [scope](#scope-of-work),
+  as defined by this charter.
+
+### Merging pull-requests
+
+* Every Community Group participant will have [write access] to the group's GitHub repository,
+  but merging a pull-request will require approval by at least two [owners](#work-item-owners) of the affected work item.
+* To ensure the applicability of the rule above,
+  pull-requests spanning multiple work items are strongly discouraged,
+  but the Chairs may decide to allow them on a per-case basis.
+* Once sufficiently approved by the appropriate owners (as defined above),
+  a pull-request can be merged even if there is disagreement about it.
+  Individuals who disagree with the choice are strongly encouraged to take ownership of their objection by submitting a subsequent pull-request.
+
+### Publishing work
+
+* The Chairs are collectively the owners on [crates.io] of the crates released by the Community Group.
+* To request the release of a crate on crates.io, or the publication of a report as a [Final Community Group Report],
+  a Community Group participant opens a pull-requests or an issue with the label `request-publication`,
+  which constitutes a call for consensus.
+* No less than two weeks after the pull-request / issue was posted,
+  the Chairs assess consensus based on the feedback on the pull-request,
+  and record a group decision on GitHub, following [Section 5.2] of the W3C process,
+  and take the appropriate action to implement the decision.
+* For releasing a crate where only the [PATCH version](https://semver.org) is changed (i.e. the only changes compared to the previous release are backward compatible bug fixes), the delay above can be reduced to one week.
+* A publication request fixing a known security issue can be accepted by the Chairs without any delay, provided that the new release only includes the fix, to the exclusion of any other pull-request merged since the last release.```
 
 It is the Chairs\' responsibility to ensure that the decision process is
 fair, respects the consensus of the CG, and does not unreasonably favour
@@ -225,3 +244,19 @@ deliverable dates by the simpler group decision process rather than this
 charter amendment process. The group will use the amendment process for
 any substantive changes to the goals, scope, deliverables, decision
 process or rules for amending the charter.
+
+[library crates]: https://doc.rust-lang.org/book/ch07-01-packages-and-crates.html
+[RDF]: https://www.w3.org/TR/rdf-primer/
+[Rust]: https://www.rust-lang.org/
+[Turtle]: https://www.w3.org/TR/rdf-turtle/
+[SHACL]: https://www.w3.org/TR/shacl/
+[zero-cost abstraction]: https://blog.rust-lang.org/2015/05/11/traits.html
+[wrapper type]: https://doc.rust-lang.org/book/ch20-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types
+[RDF Javascript Libraries Community Group]: https://www.w3.org/groups/cg/rdfjs/
+[CODEOWNERS]: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#codeowners-and-branch-protection
+[write access]: https://docs.github.com/en/get-started/learning-about-github/github-glossary#write-access
+[pull-request hack]: https://felixge.de/2013/03/11/the-pull-request-hack/
+[Section 5.2]: https://www.w3.org/policies/process/20231103/#consensus-building
+[crates.io]: https://crates.io/
+[Final Community Group Report]: https://www.w3.org/community/about/faq/#how-do-we-publish-a-report
+
