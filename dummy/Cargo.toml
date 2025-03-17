@@ -1,0 +1,15 @@
+[package]
+name = "r2c2_dummy"
+description = "This is a dummy package that will disappear as soon as the first real work-item is added."
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+readme.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+
+[dependencies]
+
+[lints]
+workspace = true

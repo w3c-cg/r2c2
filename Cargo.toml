@@ -1,0 +1,22 @@
+[workspace]
+
+members = [
+  "dummy",
+]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+authors = ["R2C2 Community Group <https://www.w3.org/groups/cg/r2c2/>"]
+edition = "2024"
+repository = "https://github.com/w3c-cg/r2c2"
+readme = "./README.md"
+license-file = "./LICENSE.md"
+keywords = ["rdf", "linked-data", "semantic-web", "w3c"] # no more than 5
+
+[workspace.dependencies]
+dummy = { version = "0.1.0", path = "dummy" }
+
+[workspace.lints.clippy]
+enum_glob_use = "allow"
+
