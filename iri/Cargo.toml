@@ -1,0 +1,14 @@
+[package]
+name = "r2c2_iri"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+readme.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+
+[dependencies]
+
+[lints]
+workspace = true
