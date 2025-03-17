@@ -1,8 +1,4 @@
-# DRAFT RDF Rust Common Crates Community Group Charter
-
-[*{TBD: remove next sentence before submitting for approval}*]
-This Charter is work in progress. To submit feedback, please
-submit an issue to https://github.com/w3c-cg/r2c2/ .
+# RDF Rust Common Crates Community Group Charter
 
 -   This Charter: https://github.com/w3c-cg/r2c2/blob/main/Charter.md
 -   Previous Charter: N/A
