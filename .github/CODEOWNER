@@ -9,5 +9,8 @@
 # Owners of the /dummy work-item
 /dummy  @pchampin @Tpt # ...
 
+# Owners of the /iri work-item
+/iri    @pchampin
+
 # Owners of another work item
 # ...
