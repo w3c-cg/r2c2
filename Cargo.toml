@@ -2,6 +2,7 @@
 
 members = [
   "dummy",
+  "term",
 ]
 resolver = "3"
 
