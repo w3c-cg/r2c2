@@ -4,6 +4,8 @@
 //!    (IRIs, language tags...)
 //! 2. define traits for different kinds of terms
 //!    (Subject, Predicate, Object, GraphName)
+//! 3. define traits for statements (Triple, Quad)
+//!
 //! but the final design may be different.
 
 #[cfg(test)]

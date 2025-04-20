@@ -2,7 +2,7 @@
 
 members = [
   "dummy",
-  "term",
+  "statement",
 ]
 resolver = "3"
 

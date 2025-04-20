@@ -9,8 +9,8 @@
 # Owners of the /dummy work-item
 /dummy  @pchampin @Tpt # ...
 
-# Owners of the /term work-item
-/term @pchampin # anyone else welcome, of course
+# Owners of the /statement work-item
+/statement @pchampin # anyone else welcome, of course
 
 # Owners of another work item
 # ...
