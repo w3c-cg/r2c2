@@ -3,6 +3,7 @@
 members = [
   "dummy",
   "statement",
+  "statement_validation",
 ]
 resolver = "3"
 
@@ -16,7 +17,9 @@ license-file = "./LICENSE.md"
 keywords = ["rdf", "linked-data", "semantic-web", "w3c"] # no more than 5
 
 [workspace.dependencies]
-dummy = { version = "0.1.0", path = "dummy" }
+r2c2_dummy = { version = "0.1.0", path = "dummy" }
+r2c2_statement = { version = "0.1.0", path = "statement" }
+r2c2_statement_validation = { version = "0.1.0", path = "statement_validation" }
 
 [workspace.lints.clippy]
 enum_glob_use = "allow"

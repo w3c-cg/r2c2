@@ -37,6 +37,3 @@ pub use _quad::*;
 pub mod impl_oxrdf;
 #[cfg(feature = "poc_impl")]
 pub mod impl_rdf_types;
-
-#[cfg(test)]
-mod test;
