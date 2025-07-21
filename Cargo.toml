@@ -1,7 +1,6 @@
 [workspace]
 
 members = [
-  "dummy",
   "statement",
   "statement_validation",
 ]
@@ -17,7 +16,6 @@ license-file = "./LICENSE.md"
 keywords = ["rdf", "linked-data", "semantic-web", "w3c"] # no more than 5
 
 [workspace.dependencies]
-r2c2_dummy = { version = "0.1.0", path = "dummy" }
 r2c2_statement = { version = "0.1.0", path = "statement" }
 r2c2_statement_validation = { version = "0.1.0", path = "statement_validation" }
 
