@@ -1,0 +1,20 @@
+[package]
+name = "r2c2_statement"
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+readme.workspace = true
+license-file.workspace = true
+keywords.workspace = true
+
+[dependencies]
+langtag = { version = "0.4.0", optional = true }
+oxrdf = { version = "0.2.4", optional = true, features = ["rdf-star"] }
+rdf-types = { version = "0.22.5", optional = true }
+
+[lints]
+workspace = true
+
+[features]
+poc_impl = ["dep:langtag", "dep:oxrdf", "dep:rdf-types"]

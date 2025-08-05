@@ -6,8 +6,6 @@
 # CG chairs own the whole repository -- and in particular of the CODEOWNERS file itself.
 *       @pchampin @Tpt
 
-# Owners of the /dummy work-item
-/dummy  @pchampin @Tpt # ...
-
-# Owners of another work item
-# ...
+# Owners of individual work items
+/statement             @pchampin # welcoming co-owners
+/statement_validation  @pchampin # welcoming co-owners
