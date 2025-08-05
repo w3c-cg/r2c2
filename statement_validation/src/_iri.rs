@@ -4,7 +4,7 @@ use r2c2_statement::Iri;
 use regex::Regex;
 
 /// Extension trait for [`Iri`] providing validation methods.
-pub trait IriValid<'a> {
+pub trait IriValidation<'a> {
     /// Return a new [`Iri`] if the argument is a valid IRI, otherwise None.
     #[allow(clippy::new_ret_no_self)]
     fn new(txt: impl Into<Cow<'a, str>>) -> Option<Iri<'a>>;
@@ -16,7 +16,7 @@ pub trait IriValid<'a> {
     fn debug_assert_is_valid(&self);
 }
 
-impl<'a> IriValid<'a> for Iri<'a> {
+impl<'a> IriValidation<'a> for Iri<'a> {
     fn new(txt: impl Into<Cow<'a, str>>) -> Option<Self> {
         let inner = txt.into();
         IRI_REGEX

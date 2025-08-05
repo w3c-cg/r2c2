@@ -4,7 +4,7 @@ use r2c2_statement::LangTag;
 use regex::Regex;
 
 /// Extension trait for [`LangTag`] providing validation methods.
-pub trait LangTagValid<'a> {
+pub trait LangTagValidation<'a> {
     /// Return a new [`LangTag`] if the argument is a valid IRI, otherwise None.
     #[allow(clippy::new_ret_no_self)]
     fn new(txt: impl Into<Cow<'a, str>>) -> Option<LangTag<'a>>;
@@ -16,7 +16,7 @@ pub trait LangTagValid<'a> {
     fn debug_assert_is_valid(&self);
 }
 
-impl<'a> LangTagValid<'a> for LangTag<'a> {
+impl<'a> LangTagValidation<'a> for LangTag<'a> {
     fn new(txt: impl Into<Cow<'a, str>>) -> Option<Self> {
         let inner = txt.into();
         TAG_REGEX
