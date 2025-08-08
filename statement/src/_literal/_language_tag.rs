@@ -4,7 +4,7 @@ use std::borrow::Cow;
 /// i.e. it is a valid language tag.
 ///
 /// ## Contract
-/// * Consumers of [`LangTag`]s can safely assume that the underlying text is a valid IRI.
+/// * Consumers of [`LangTag`]s can safely assume that the underlying text is a valid language tag.
 /// * Producers of [`LangTag`]s are responsible for ensuring that constraint.
 ///
 /// This contract only require that the underlying text complies with the grammar defined by [BCP47].
