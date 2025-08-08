@@ -1,10 +1,15 @@
 use std::borrow::Cow;
 
-/// Wrapper around a [`Cow<str>`] guaranteeing that the underlying text satisfies [BCP47].
+/// Wrapper around a [`Cow<str>`] signaling that it complies with [BCP47],
+/// i.e. it is a valid language tag.
 ///
-/// NB: This type checks that the structure of the tag complies with the grammar,
-/// but does *not* check that each component is a valid code
-/// (i.e. ISO 639 for 2-3 characters language tag, or ISO 15924 for the script)
+/// ## Contract
+/// * Consumers of [`LangTag`]s can safely assume that the underlying text is a valid IRI.
+/// * Producers of [`LangTag`]s are responsible for ensuring that constraint.
+///
+/// This contract only require that the underlying text complies with the grammar defined by [BCP47].
+/// It does not require that each component is a valid code
+/// (i.e. ISO 639 for 2-3 characters language tag, or ISO 15924 for the script).
 ///
 /// [BCP47]: https://datatracker.ietf.org/doc/bcp47/
 #[derive(Clone, Debug, Eq, Ord)]
@@ -12,6 +17,9 @@ pub struct LangTag<'a>(Cow<'a, str>);
 
 impl<'a> LangTag<'a> {
     /// Return a new [`LangTag`], assuming the argument is a valid language tag.
+    ///
+    /// ## Precondition
+    /// It is the responsibility of the caller to ensure that `txt` is a valid language tag.
     pub fn new_unchecked(txt: impl Into<Cow<'a, str>>) -> Self {
         LangTag(txt.into())
     }
@@ -21,8 +29,12 @@ impl<'a> LangTag<'a> {
         self.0
     }
 
-    /// Apply a function to the inner txt, assuming the result of the function is still a valid language tag.
-    pub fn unchecked_map(self, mut f: impl FnMut(Cow<'a, str>) -> Cow<'a, str>) -> Self {
+    /// Apply a function to the inner text, assuming the result is still a valid language tag.
+    ///
+    /// ## Precondition
+    /// It is the responsibility of the caller to ensure that `f`
+    /// produces a valid language tag when its argument is a valid language tag.
+    pub fn map_unchecked(self, mut f: impl FnMut(Cow<'a, str>) -> Cow<'a, str>) -> Self {
         Self(f(self.0))
     }
 
