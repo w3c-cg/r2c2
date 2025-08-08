@@ -1,6 +1,11 @@
 use std::borrow::Cow;
 
-/// Wrapper around a [`Cow<str>`] guaranteeing that the underlying text satisfies [RFC3987].
+/// Wrapper around a [`Cow<str>`] signaling that it complies with [RFC3987],
+/// i.e. it is a valid IRI.
+///
+/// ## Contract
+/// * Consumers of [`Iri`]s can safely assume that the underlying text is a valid IRI.
+/// * Producers of [`Iri`]s are responsible for ensuring that constraint.
 ///
 /// [RFC3987]: https://datatracker.ietf.org/doc/rfc3987/
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -8,6 +13,9 @@ pub struct Iri<'a>(Cow<'a, str>);
 
 impl<'a> Iri<'a> {
     /// Return a new [`Iri`], assuming the argument is a valid IRI.
+    ///
+    /// ## Precondition
+    /// It is the responsibility of the caller to ensure that `txt` is a valid IRI
     pub fn new_unchecked(txt: impl Into<Cow<'a, str>>) -> Self {
         Iri(txt.into())
     }
@@ -17,8 +25,12 @@ impl<'a> Iri<'a> {
         self.0
     }
 
-    /// Apply a function to the inner txt, assuming the result of the function is still a valid IRI.
-    pub fn unchecked_map(self, mut f: impl FnMut(Cow<'a, str>) -> Cow<'a, str>) -> Self {
+    /// Apply a function to the inner text, assuming the result is still a valid IRI.
+    ///
+    /// ## Precondition
+    /// It is the responsibility of the caller to ensure that `f`
+    /// produces a valid IRI when its argument is a valid IRI.
+    pub fn map_unchecked(self, mut f: impl FnMut(Cow<'a, str>) -> Cow<'a, str>) -> Self {
         Self(f(self.0))
     }
 
