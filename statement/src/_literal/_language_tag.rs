@@ -7,7 +7,7 @@ use std::borrow::Cow;
 /// (i.e. ISO 639 for 2-3 characters language tag, or ISO 15924 for the script)
 ///
 /// [BCP47]: https://datatracker.ietf.org/doc/bcp47/
-#[derive(Clone, Debug, Eq, Ord)]
+#[derive(Clone, Debug, Eq)]
 pub struct LangTag<'a>(Cow<'a, str>);
 
 impl<'a> LangTag<'a> {
@@ -106,6 +106,8 @@ impl std::fmt::Display for LangTag<'_> {
 
 #[cfg(test)]
 mod test {
+    use std::cmp::Ordering;
+
     use super::*;
 
     #[test]
@@ -140,6 +142,10 @@ mod test {
         assert_eq!(tag1, tag2);
         assert_eq!(tag1, "en-gb");
         assert!(tag1 <= tag2 && tag2 <= tag1);
+        assert_eq!(tag1.partial_cmp(&tag2), Some(Ordering::Equal));
+        assert_eq!(tag2.partial_cmp(&tag1), Some(Ordering::Equal));
+        assert_eq!(tag1.cmp(&tag2), Ordering::Equal);
+        assert_eq!(tag2.cmp(&tag1), Ordering::Equal);
         assert!("EN" < tag1 && tag1 < "EN-ZZ");
     }
 }
