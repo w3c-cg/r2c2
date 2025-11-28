@@ -90,9 +90,7 @@ pub trait Object {
         match self.object_kind() {
             ObjectKind::Iri | ObjectKind::Literal => true,
             ObjectKind::BlankNode => false,
-            ObjectKind::Triple => {
-                self.as_triple().unwrap().ground()
-            }
+            ObjectKind::Triple => self.as_triple().unwrap().ground(),
         }
     }
 }
