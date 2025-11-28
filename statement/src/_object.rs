@@ -33,16 +33,65 @@ pub trait Object {
         }
     }
 
-    /// Whether this object is [ground](https://https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
+    /// Return true if this object is an IRI.
+    fn is_iri(&self) -> bool {
+        self.object_kind() == ObjectKind::Iri
+    }
+
+    /// Return true if this object is a blank node.
+    fn is_blank_node(&self) -> bool {
+        self.object_kind() == ObjectKind::BlankNode
+    }
+
+    /// Return true if this object is a literal
+    fn is_literal(&self) -> bool {
+        self.object_kind() == ObjectKind::Literal
+    }
+
+    /// Return true if this object is a triple term
+    fn is_triple(&self) -> bool {
+        self.object_kind() == ObjectKind::Triple
+    }
+
+    /// If this object is an IRI, return it as an [`Iri`], otherwise `None`.
+    fn as_iri(&self) -> Option<Iri<'_>> {
+        match self.as_object_proxy() {
+            ObjectProxy::Iri(iri) => Some(iri),
+            _ => None,
+        }
+    }
+
+    /// If this object is a blank node, return its internal identifier, otherwise `None`.
+    fn as_blank_node(&self) -> Option<Cow<'_, str>> {
+        match self.as_object_proxy() {
+            ObjectProxy::BlankNode(bnid) => Some(bnid),
+            _ => None,
+        }
+    }
+
+    /// If this object is a literal, return it as an [`Literal`], otherwise `None`.
+    fn as_literal(&self) -> Option<Literal<'_>> {
+        match self.as_object_proxy() {
+            ObjectProxy::Literal(lit) => Some(lit),
+            _ => None,
+        }
+    }
+
+    /// If this object is a triple term, return it as an [`Self::Triple`](Object::Triple), otherwise `None`.
+    fn as_triple(&self) -> Option<Self::Triple<'_>> {
+        match self.as_object_proxy() {
+            ObjectProxy::Triple(tr) => Some(tr),
+            _ => None,
+        }
+    }
+
+    /// Whether this object is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
     fn ground(&self) -> bool {
         match self.object_kind() {
             ObjectKind::Iri | ObjectKind::Literal => true,
             ObjectKind::BlankNode => false,
             ObjectKind::Triple => {
-                let ObjectProxy::Triple(triple) = self.as_object_proxy() else {
-                    unreachable!()
-                };
-                triple.ground()
+                self.as_triple().unwrap().ground()
             }
         }
     }
