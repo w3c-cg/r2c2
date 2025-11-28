@@ -5,7 +5,7 @@
 //! This module is developed as if [`oxrdf`] implemented RDF 1.2 completely and strictly,
 //! which is not entirely true:
 //! - [`oxrdf`] does not support base direction in literals, so it is not complete;
-//! - [`oxrdf`] with the [`rdf-star`] feature allows triple terms in the subject position, so it is not strict.
+//! - [`oxrdf`] with the `rdf-star` feature allows triple terms in the subject position, so it is not strict.
 //!
 //! This is handled by panic'ing when those situations are encountered.
 //!
