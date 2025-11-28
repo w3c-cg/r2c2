@@ -59,7 +59,7 @@ pub trait Quad {
     /// [RDF dataset]: https://www.w3.org/TR/rdf12-concepts/#dfn-rdf-dataset
     fn graph_name(&self) -> Option<Self::GraphName<'_>>;
 
-    /// Whether this quad is [ground](https://https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
+    /// Whether this quad is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
     ///
     /// NB: RDF Concepts does not actually defined the notion of "ground quad",
     /// but this is a natural extension: all terms, including the graph name if present, must be ground.

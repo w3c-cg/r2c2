@@ -26,7 +26,33 @@ pub trait GraphName {
         }
     }
 
-    /// Whether this graph_name is [ground](https://https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
+    /// Return true if this graph name is an IRI.
+    fn is_iri(&self) -> bool {
+        self.graph_name_kind() == GraphNameKind::Iri
+    }
+
+    /// Return true if this graph name is a blank node.
+    fn is_blank_node(&self) -> bool {
+        self.graph_name_kind() == GraphNameKind::BlankNode
+    }
+
+    /// If this graph name is an IRI, return it as b_ an [`Iri`], otherwise `None`.
+    fn as_iri(&self) -> Option<Iri<'_>> {
+        match self.as_graph_name_proxy() {
+            GraphNameProxy::Iri(iri) => Some(iri),
+            _ => None,
+        }
+    }
+
+    /// If this graph name is a blank node, return its internal identifier, otherwise `None`.
+    fn as_blank_node(&self) -> Option<Cow<'_, str>> {
+        match self.as_graph_name_proxy() {
+            GraphNameProxy::BlankNode(bnid) => Some(bnid),
+            _ => None,
+        }
+    }
+
+    /// Whether this graph_name is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
     fn ground(&self) -> bool {
         match self.graph_name_kind() {
             GraphNameKind::Iri => true,
