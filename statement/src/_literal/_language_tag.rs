@@ -76,13 +76,17 @@ impl std::cmp::PartialEq<LangTag<'_>> for &str {
     }
 }
 
+impl std::cmp::Ord for LangTag<'_> {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.0
+            .to_ascii_lowercase()
+            .cmp(&other.0.to_ascii_lowercase())
+    }
+}
+
 impl std::cmp::PartialOrd for LangTag<'_> {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(
-            self.0
-                .to_ascii_lowercase()
-                .cmp(&other.0.to_ascii_lowercase()),
-        )
+        Some(self.cmp(other))
     }
 }
 
