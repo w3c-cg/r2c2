@@ -24,7 +24,33 @@ pub trait Subject {
         }
     }
 
-    /// Whether this subject is [ground](https://https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
+    /// Return true if this subject is an IRI.
+    fn is_iri(&self) -> bool {
+        self.subject_kind() == SubjectKind::Iri
+    }
+
+    /// Return true if this subject is a blank node.
+    fn is_blank_node(&self) -> bool {
+        self.subject_kind() == SubjectKind::BlankNode
+    }
+
+    /// If this subject is an IRI, return it as an [`Iri`], otherwise `None`.
+    fn as_iri(&self) -> Option<Iri<'_>> {
+        match self.as_subject_proxy() {
+            SubjectProxy::Iri(iri) => Some(iri),
+            _ => None,
+        }
+    }
+
+    /// If this subject is a blank node, return its internal identifier, otherwise `None`.
+    fn as_blank_node(&self) -> Option<Cow<'_, str>> {
+        match self.as_subject_proxy() {
+            SubjectProxy::BlankNode(bnid) => Some(bnid),
+            _ => None,
+        }
+    }
+
+    /// Whether this subject is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
     fn ground(&self) -> bool {
         match self.subject_kind() {
             SubjectKind::Iri => true,
