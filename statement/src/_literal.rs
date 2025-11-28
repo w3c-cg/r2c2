@@ -36,7 +36,7 @@ pub enum Literal<'a> {
 
 impl Literal<'_> {
     /// Borrow this [`Literal`] as another [`Literal`].
-    pub fn borrowed(&self) -> Literal {
+    pub fn borrowed(&self) -> Literal<'_> {
         match self {
             Literal::Typed(lex, iri) => Literal::Typed(Cow::from(lex.as_ref()), iri.borrowed()),
             Literal::LanguageString(lex, lang_tag, base_dir) => {
@@ -46,7 +46,7 @@ impl Literal<'_> {
     }
 
     /// [lexical form](https://www.w3.org/TR/rdf12-concepts/#dfn-lexical-form) of this literal
-    pub fn lexical_form(&self) -> Cow<str> {
+    pub fn lexical_form(&self) -> Cow<'_, str> {
         let ref_cow = match self {
             Literal::Typed(lex, ..) => lex,
             Literal::LanguageString(lex, ..) => lex,
