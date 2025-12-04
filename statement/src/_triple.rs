@@ -42,7 +42,7 @@ pub trait Triple {
     /// [object]: https://www.w3.org/TR/rdf12-concepts/#dfn-object
     fn object(&self) -> Self::Object<'_>;
 
-    /// Whether this triple is [ground](https://https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
+    /// Whether this triple is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
     fn ground(&self) -> bool {
         self.subject().ground() && self.object().ground()
     }
