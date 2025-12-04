@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, cmp::Ordering};
 
 /// Wrapper around a [`Cow<str>`] signaling that it complies with [BCP47],
 /// i.e. it is a valid language tag.
@@ -12,7 +12,7 @@ use std::borrow::Cow;
 /// (i.e. ISO 639 for 2-3 characters language tag, or ISO 15924 for the script).
 ///
 /// [BCP47]: https://datatracker.ietf.org/doc/bcp47/
-#[derive(Clone, Debug, Eq, Ord)]
+#[derive(Clone, Debug, Eq)]
 pub struct LangTag<'a>(Cow<'a, str>);
 
 impl<'a> LangTag<'a> {
@@ -88,25 +88,27 @@ impl std::cmp::PartialEq<LangTag<'_>> for &str {
     }
 }
 
+impl std::cmp::Ord for LangTag<'_> {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        cmp_ignore_case_ascii(&self.0, &other.0)
+    }
+}
+
 impl std::cmp::PartialOrd for LangTag<'_> {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(
-            self.0
-                .to_ascii_lowercase()
-                .cmp(&other.0.to_ascii_lowercase()),
-        )
+        Some(self.cmp(other))
     }
 }
 
 impl std::cmp::PartialOrd<&str> for LangTag<'_> {
     fn partial_cmp(&self, other: &&'_ str) -> Option<std::cmp::Ordering> {
-        Some(self.0.to_ascii_lowercase().cmp(&other.to_ascii_lowercase()))
+        Some(cmp_ignore_case_ascii(&self.0, *other))
     }
 }
 
 impl std::cmp::PartialOrd<LangTag<'_>> for &str {
     fn partial_cmp(&self, other: &LangTag<'_>) -> Option<std::cmp::Ordering> {
-        Some(self.to_ascii_lowercase().cmp(&other.0.to_ascii_lowercase()))
+        Some(cmp_ignore_case_ascii(self, &other.0))
     }
 }
 
@@ -116,8 +118,26 @@ impl std::fmt::Display for LangTag<'_> {
     }
 }
 
+fn cmp_ignore_case_ascii(a: &str, b: &str) -> Ordering {
+    cmp_ignore_case_ascii_bytes(a.as_bytes(), b.as_bytes())
+}
+
+fn cmp_ignore_case_ascii_bytes(a: &[u8], b: &[u8]) -> Ordering {
+    match (a, b) {
+        ([], []) => Ordering::Equal,
+        ([], [_, ..]) => Ordering::Less,
+        ([_, ..], []) => Ordering::Greater,
+        ([ah, ar @ ..], [bh, br @ ..]) => ah
+            .to_ascii_lowercase()
+            .cmp(&bh.to_ascii_lowercase())
+            .then_with(|| cmp_ignore_case_ascii_bytes(ar, br)),
+    }
+}
+
 #[cfg(test)]
 mod test {
+    use std::cmp::Ordering;
+
     use super::*;
 
     #[test]
@@ -152,6 +172,10 @@ mod test {
         assert_eq!(tag1, tag2);
         assert_eq!(tag1, "en-gb");
         assert!(tag1 <= tag2 && tag2 <= tag1);
+        assert_eq!(tag1.partial_cmp(&tag2), Some(Ordering::Equal));
+        assert_eq!(tag2.partial_cmp(&tag1), Some(Ordering::Equal));
+        assert_eq!(tag1.cmp(&tag2), Ordering::Equal);
+        assert_eq!(tag2.cmp(&tag1), Ordering::Equal);
         assert!("EN" < tag1 && tag1 < "EN-ZZ");
     }
 }
