@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, cmp::Ordering};
 
 /// Wrapper around a [`Cow<str>`] guaranteeing that the underlying text satisfies [BCP47].
 ///
@@ -78,9 +78,7 @@ impl std::cmp::PartialEq<LangTag<'_>> for &str {
 
 impl std::cmp::Ord for LangTag<'_> {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.0
-            .to_ascii_lowercase()
-            .cmp(&other.0.to_ascii_lowercase())
+        cmp_ignore_case_ascii(&self.0, &other.0)
     }
 }
 
@@ -92,19 +90,35 @@ impl std::cmp::PartialOrd for LangTag<'_> {
 
 impl std::cmp::PartialOrd<&str> for LangTag<'_> {
     fn partial_cmp(&self, other: &&'_ str) -> Option<std::cmp::Ordering> {
-        Some(self.0.to_ascii_lowercase().cmp(&other.to_ascii_lowercase()))
+        Some(cmp_ignore_case_ascii(&self.0, *other))
     }
 }
 
 impl std::cmp::PartialOrd<LangTag<'_>> for &str {
     fn partial_cmp(&self, other: &LangTag<'_>) -> Option<std::cmp::Ordering> {
-        Some(self.to_ascii_lowercase().cmp(&other.0.to_ascii_lowercase()))
+        Some(cmp_ignore_case_ascii(self, &other.0))
     }
 }
 
 impl std::fmt::Display for LangTag<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.0.as_ref().fmt(f)
+    }
+}
+
+fn cmp_ignore_case_ascii(a: &str, b: &str) -> Ordering {
+    cmp_ignore_case_ascii_bytes(a.as_bytes(), b.as_bytes())
+}
+
+fn cmp_ignore_case_ascii_bytes(a: &[u8], b: &[u8]) -> Ordering {
+    match (a, b) {
+        ([], []) => Ordering::Equal,
+        ([], [_, ..]) => Ordering::Less,
+        ([_, ..], []) => Ordering::Greater,
+        ([ah, ar @ ..], [bh, br @ ..]) => ah
+            .to_ascii_lowercase()
+            .cmp(&bh.to_ascii_lowercase())
+            .then_with(|| cmp_ignore_case_ascii_bytes(ar, br)),
     }
 }
 
