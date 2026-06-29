@@ -102,7 +102,7 @@ impl std::cmp::PartialOrd for LangTag<'_> {
 
 impl std::cmp::PartialOrd<&str> for LangTag<'_> {
     fn partial_cmp(&self, other: &&'_ str) -> Option<std::cmp::Ordering> {
-        Some(cmp_ignore_case_ascii(&self.0, *other))
+        Some(cmp_ignore_case_ascii(&self.0, other))
     }
 }
 

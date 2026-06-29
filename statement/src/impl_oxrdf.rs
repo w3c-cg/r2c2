@@ -1,8 +1,15 @@
-//! Proof-of-concept implementation of this crate's traits for [`oxrdf`].
+//! **Example** implementation of this crate's traits for [`oxrdf`] 0.2.4.
 //!
-//! Only present with the `poc_impl` feature.
+//! <div class="warning">
 //!
-//! This module is developed as if [`oxrdf`] implemented RDF 1.2 completely and strictly,
+//! This module is only present with the `poc_impl` feature,
+//! which is **not** meant to be used by dependent crates.
+//! It is provided as an *example* of how 3rd party crates can implement R2C2 traits in their own types.
+//! It is expected that [`oxrdf`] will eventually provide such implementations.
+//!
+//! </div>
+//!
+//! This module is developed as if [`oxrdf`] 0.2.4 implemented RDF 1.2 completely and strictly,
 //! which is not entirely true:
 //! - [`oxrdf`] does not support base direction in literals, so it is not complete;
 //! - [`oxrdf`] with the `rdf-star` feature allows triple terms in the subject position, so it is not strict.

@@ -1,8 +1,15 @@
-//! Proof-of-concept implementation of this crate's traits for [`rdf_types`].
+//! **Example** implementation of this crate's traits for [`rdf_types`] 0.22.5.
 //!
-//! Only present with the `poc_impl` feature.
+//! <div class="warning">
 //!
-//! [`rdf_types`] is an implementation of RDF 1.1,
+//! This module is only present with the `poc_impl` feature,
+//! which is **not** meant to be used by dependent crates.
+//! It is provided as an *example* of how 3rd party crates can implement R2C2 traits in their own types.
+//! It is expected that [`oxrdf`] will eventually provide such implementations.
+//!
+//! </div>
+//!
+//! [`rdf_types`] 0.22.5 is an implementation of RDF 1.1,
 //! which makes it a strict subset of RDF 1.2.
 //! Therefore, while [`rdf_types`] types can implement R2C2 traits,
 //! conversion from R2C2 is performed using TryFrom.
