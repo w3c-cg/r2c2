@@ -32,3 +32,8 @@ mod _triple;
 pub use _triple::*;
 mod _quad;
 pub use _quad::*;
+
+#[cfg(feature = "poc_impl")]
+pub mod impl_oxrdf;
+#[cfg(feature = "poc_impl")]
+pub mod impl_rdf_types;
