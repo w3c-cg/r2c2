@@ -1,6 +1,6 @@
-use std::borrow::Cow;
+use crate::AnyStr;
 
-/// Wrapper around a [`Cow<str>`] signaling that it complies with [RFC3987],
+/// Wrapper around a [`AnyStr`] signaling that it complies with [RFC3987],
 /// i.e. it is a valid IRI.
 ///
 /// ## Contract
@@ -9,19 +9,19 @@ use std::borrow::Cow;
 ///
 /// [RFC3987]: https://datatracker.ietf.org/doc/rfc3987/
 #[derive(Clone, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
-pub struct Iri<'a>(Cow<'a, str>);
+pub struct Iri<'a>(AnyStr<'a>);
 
 impl<'a> Iri<'a> {
     /// Return a new [`Iri`], assuming the argument is a valid IRI.
     ///
     /// ## Precondition
     /// It is the responsibility of the caller to ensure that `txt` is a valid IRI
-    pub fn new_unchecked(txt: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new_unchecked(txt: impl Into<AnyStr<'a>>) -> Self {
         Iri(txt.into())
     }
 
-    /// Return the inner [`Cow<str>`](Cow).
-    pub fn unwrap(self) -> Cow<'a, str> {
+    /// Return the inner [`AnyStr`].
+    pub fn unwrap(self) -> AnyStr<'a> {
         self.0
     }
 
@@ -30,13 +30,13 @@ impl<'a> Iri<'a> {
     /// ## Precondition
     /// It is the responsibility of the caller to ensure that `f`
     /// produces a valid IRI when its argument is a valid IRI.
-    pub fn map_unchecked(self, mut f: impl FnMut(Cow<'a, str>) -> Cow<'a, str>) -> Self {
+    pub fn map_unchecked(self, mut f: impl FnMut(AnyStr<'a>) -> AnyStr<'a>) -> Self {
         Self(f(self.0))
     }
 
     /// Borrow this [`Iri`] as another [`Iri`].
     pub fn borrowed(&self) -> Iri<'_> {
-        Iri::new_unchecked(self.as_ref())
+        Iri(self.0.borrowed())
     }
 }
 

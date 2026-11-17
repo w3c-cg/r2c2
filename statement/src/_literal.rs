@@ -1,9 +1,8 @@
 mod _language_tag;
-use std::borrow::Cow;
 
 pub use _language_tag::*;
 
-use crate::Iri;
+use crate::{AnyStr, Iri};
 
 /// The different possible value for literals' [base direction].
 ///
@@ -27,31 +26,31 @@ pub enum BaseDir {
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Literal<'a> {
     /// A literal with a specified datatype.
-    Typed(Cow<'a, str>, Iri<'a>),
+    Typed(AnyStr<'a>, Iri<'a>),
     /// A [language tagged string](https://www.w3.org/TR/rdf12-concepts/#dfn-language-tagged-string),
     /// or a [directional language tagged string](https://www.w3.org/TR/rdf12-concepts/#dfn-language-tagged-string),
     /// depending on the presence of a [`BaseDir`] in the third component.
-    LanguageString(Cow<'a, str>, LangTag<'a>, Option<BaseDir>),
+    LanguageString(AnyStr<'a>, LangTag<'a>, Option<BaseDir>),
 }
 
 impl Literal<'_> {
     /// Borrow this [`Literal`] as another [`Literal`].
     pub fn borrowed(&self) -> Literal<'_> {
         match self {
-            Literal::Typed(lex, iri) => Literal::Typed(Cow::from(lex.as_ref()), iri.borrowed()),
+            Literal::Typed(lex, iri) => Literal::Typed(lex.borrowed(), iri.borrowed()),
             Literal::LanguageString(lex, lang_tag, base_dir) => {
-                Literal::LanguageString(Cow::from(lex.as_ref()), lang_tag.borrowed(), *base_dir)
+                Literal::LanguageString(lex.borrowed(), lang_tag.borrowed(), *base_dir)
             }
         }
     }
 
     /// [lexical form](https://www.w3.org/TR/rdf12-concepts/#dfn-lexical-form) of this literal
-    pub fn lexical_form(&self) -> Cow<'_, str> {
-        let ref_cow = match self {
+    pub fn lexical_form(&self) -> AnyStr<'_> {
+        match self {
             Literal::Typed(lex, ..) => lex,
             Literal::LanguageString(lex, ..) => lex,
-        };
-        Cow::from(ref_cow.as_ref())
+        }
+        .borrowed()
     }
 
     /// [datatype IRI](https://www.w3.org/TR/rdf12-concepts/#dfn-datatype-iri) of this literal

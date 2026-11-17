@@ -1,6 +1,4 @@
-use std::borrow::Cow;
-
-use crate::Iri;
+use crate::{AnyStr, Iri};
 
 /// A trait for [RDF terms] allowed as a [graph name] in an [RDF dataset].
 ///
@@ -18,7 +16,7 @@ pub trait GraphName {
     /// # Implementers
     /// A default implementation is provided for this method, based on [`GraphName::as_graph_name_proxy`].
     /// It may be useful to override it, especially for types where the inner values of [`GraphNameProxy`]
-    /// are allocated as owned [`Cow<str>`](std::borrow::Cow) rather than borrowed.
+    /// require additional allocation (e.g. [`AnyStr::String`]).
     fn graph_name_kind(&self) -> GraphNameKind {
         match self.as_graph_name_proxy() {
             GraphNameProxy::Iri(_) => GraphNameKind::Iri,
@@ -45,7 +43,7 @@ pub trait GraphName {
     }
 
     /// If this graph name is a blank node, return its internal identifier, otherwise `None`.
-    fn as_blank_node(&self) -> Option<Cow<'_, str>> {
+    fn as_blank_node(&self) -> Option<AnyStr<'_>> {
         match self.as_graph_name_proxy() {
             GraphNameProxy::BlankNode(bnid) => Some(bnid),
             _ => None,
@@ -66,7 +64,7 @@ pub enum GraphNameProxy<'a> {
     ///
     /// Note that this API does not impose any constraint on blank node identifiers,
     /// but concrete syntax usually do, so serializer may alter these identifiers.
-    BlankNode(Cow<'a, str>),
+    BlankNode(AnyStr<'a>),
 }
 
 /// An enum representing the different kinds of [RDF terms] that can be [graph name].
@@ -104,7 +102,7 @@ impl GraphName for GraphNameProxy<'_> {
     fn as_graph_name_proxy(&self) -> GraphNameProxy<'_> {
         match self {
             GraphNameProxy::Iri(iri) => GraphNameProxy::Iri(iri.borrowed()),
-            GraphNameProxy::BlankNode(cow) => GraphNameProxy::BlankNode(Cow::from(cow.as_ref())),
+            GraphNameProxy::BlankNode(anystr) => GraphNameProxy::BlankNode(anystr.borrowed()),
         }
     }
 }

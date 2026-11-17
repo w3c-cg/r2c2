@@ -220,7 +220,7 @@ impl<'a> From<Iri<'a>> for rt::IriBuf {
     fn from(value: Iri<'a>) -> Self {
         unsafe {
             // SAFETY: we know that value is a valid IRI
-            rt::IriBuf::new_unchecked(value.unwrap().into_owned())
+            rt::IriBuf::new_unchecked(value.unwrap().to_string())
         }
     }
 }
@@ -268,17 +268,17 @@ impl<'a, T: Triple> TryFrom<ObjectProxy<'a, T>> for rt::Object {
             ObjectProxy::BlankNode(bnid) => rt::Object::Id(rt::Id::Blank(safe_bnode(bnid))),
             ObjectProxy::Literal(literal) => rt::Object::Literal(match literal {
                 Literal::Typed(lex, iri) => rt::Literal::new(
-                    lex.into_owned(),
+                    lex.to_string(),
                     rt::LiteralType::Any(unsafe {
                         // SAFETY: iri is known to be a valid IRI
-                        rt::IriBuf::new_unchecked(iri.unwrap().into_owned())
+                        rt::IriBuf::new_unchecked(iri.unwrap().to_string())
                     }),
                 ),
                 Literal::LanguageString(lex, lang_tag, None) => rt::Literal::new(
-                    lex.into_owned(),
+                    lex.to_string(),
                     rt::LiteralType::LangString(unsafe {
                         // SAFETY: lang_tag is known to be a valid language tag
-                        langtag::LangTagBuf::new_unchecked(lang_tag.unwrap().into_owned())
+                        langtag::LangTagBuf::new_unchecked(lang_tag.unwrap().to_string())
                     }),
                 ),
                 Literal::LanguageString(_, _, Some(_)) => {
@@ -351,7 +351,7 @@ impl GraphName for rt::LexicalGraphLabelRef<'_> {
 
 /// This function converts an R2C2 bnode label into an rdf_types Blank Node,
 /// ensuring that bnode labels that are not valid SPARQL bnodeIds are correctly handled
-fn safe_bnode(bnid: std::borrow::Cow<str>) -> rt::BlankIdBuf {
+fn safe_bnode(bnid: AnyStr<'_>) -> rt::BlankIdBuf {
     rt::BlankIdBuf::new(format!("_:{bnid}")).unwrap_or_else(|err| {
         use std::hash::{DefaultHasher, Hash, Hasher};
         let mut s = DefaultHasher::new();

@@ -1,6 +1,4 @@
-use std::borrow::Cow;
-
-use crate::{Iri, Literal, Triple};
+use crate::{AnyStr, Iri, Literal, Triple};
 
 /// A trait for [RDF terms] allowed in the [object] position of an [RDF triple].
 ///
@@ -23,7 +21,7 @@ pub trait Object {
     /// # Implementers
     /// A default implementation is provided for this method, based on [`Object::as_object_proxy`].
     /// It may be useful to override it, especially for types where the inner values of [`ObjectProxy`]
-    /// are allocated as owned [`Cow<str>`](std::borrow::Cow) rather than borrowed.
+    /// require additional allocation (e.g. [`AnyStr::String`]).
     fn object_kind(&self) -> ObjectKind {
         match self.as_object_proxy() {
             ObjectProxy::Iri(_) => ObjectKind::Iri,
@@ -62,7 +60,7 @@ pub trait Object {
     }
 
     /// If this object is a blank node, return its internal identifier, otherwise `None`.
-    fn as_blank_node(&self) -> Option<Cow<'_, str>> {
+    fn as_blank_node(&self) -> Option<AnyStr<'_>> {
         match self.as_object_proxy() {
             ObjectProxy::BlankNode(bnid) => Some(bnid),
             _ => None,
@@ -99,7 +97,7 @@ pub enum ObjectProxy<'a, T: Triple + 'a> {
     ///
     /// Note that this API does not impose any constraint on blank node identifiers,
     /// but concrete syntax usually do, so serializer may alter these identifiers.
-    BlankNode(Cow<'a, str>),
+    BlankNode(AnyStr<'a>),
     /// A [literal](https://www.w3.org/TR/rdf12-concepts/#dfn-literal)
     Literal(Literal<'a>),
     /// A [triple term](https://www.w3.org/TR/rdf12-concepts/#dfn-triple-term)
@@ -155,7 +153,7 @@ impl<T: Triple> Object for ObjectProxy<'_, T> {
     fn as_object_proxy(&self) -> ObjectProxy<'_, &T> {
         match self {
             ObjectProxy::Iri(iri) => ObjectProxy::Iri(iri.borrowed()),
-            ObjectProxy::BlankNode(cow) => ObjectProxy::BlankNode(Cow::from(cow.as_ref())),
+            ObjectProxy::BlankNode(anystr) => ObjectProxy::BlankNode(anystr.borrowed()),
             ObjectProxy::Literal(literal) => ObjectProxy::Literal(literal.borrowed()),
             ObjectProxy::Triple(triple) => ObjectProxy::Triple(triple),
         }

@@ -265,7 +265,7 @@ impl Predicate for ox::NamedNode {
 
 impl<'a> From<Iri<'a>> for ox::NamedNode {
     fn from(value: Iri<'a>) -> Self {
-        ox::NamedNode::new_unchecked(value.unwrap().into_owned())
+        ox::NamedNode::new_unchecked(value.unwrap().to_string())
     }
 }
 
@@ -308,7 +308,7 @@ impl<'a, T: Triple> From<ObjectProxy<'a, T>> for ox::Term {
             ObjectProxy::BlankNode(bnid) => safe_bnode(bnid).into(),
             ObjectProxy::Literal(literal) => match literal {
                 Literal::Typed(lex, iri) => {
-                    ox::Literal::new_typed_literal(lex.into_owned(), iri).into()
+                    ox::Literal::new_typed_literal(lex.to_string(), iri).into()
                 }
                 Literal::LanguageString(lex, lang_tag, base_dir) => {
                     if base_dir.is_some() {
@@ -320,8 +320,8 @@ impl<'a, T: Triple> From<ObjectProxy<'a, T>> for ox::Term {
                         // they should implement TryFrom instead.
                     }
                     ox::Literal::new_language_tagged_literal_unchecked(
-                        lex.into_owned(),
-                        lang_tag.unwrap().into_owned(),
+                        lex.to_string(),
+                        lang_tag.unwrap().to_string(),
                     )
                     .into()
                 }
@@ -414,13 +414,13 @@ impl GraphName for ox::NamedOrBlankNodeRef<'_> {
 
 /// This function converts an R2C2 bnode label into an OxRDF Blank Node,
 /// ensuring that bnode labels that are not valid SPARQL bnodeIds are correctly handled
-fn safe_bnode(bnid: std::borrow::Cow<str>) -> ox::BlankNode {
+fn safe_bnode(bnid: AnyStr<'_>) -> ox::BlankNode {
     use std::hash::{DefaultHasher, Hash, Hasher};
     let mut s = DefaultHasher::new();
     bnid.hash(&mut s);
     let h = s.finish();
 
-    ox::BlankNode::new(bnid.into_owned())
+    ox::BlankNode::new(bnid.to_string())
         .unwrap_or_else(|_| ox::BlankNode::new_from_unique_id(h as u128))
 }
 

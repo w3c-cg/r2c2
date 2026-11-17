@@ -14,6 +14,8 @@
 //!   It is expected that such RDF implementations will eventually implements the traits themselves.
 #![deny(missing_docs)]
 
+mod _any_str;
+pub use _any_str::*;
 mod _iri;
 pub use _iri::*;
 mod _literal;

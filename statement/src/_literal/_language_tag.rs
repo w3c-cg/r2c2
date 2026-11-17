@@ -1,6 +1,8 @@
-use std::{borrow::Cow, cmp::Ordering};
+use std::cmp::Ordering;
 
-/// Wrapper around a [`Cow<str>`] signaling that it complies with [BCP47],
+use crate::AnyStr;
+
+/// Wrapper around a [`AnyStr`] signaling that it complies with [BCP47],
 /// i.e. it is a valid language tag.
 ///
 /// ## Contract
@@ -13,19 +15,19 @@ use std::{borrow::Cow, cmp::Ordering};
 ///
 /// [BCP47]: https://datatracker.ietf.org/doc/bcp47/
 #[derive(Clone, Debug, Eq)]
-pub struct LangTag<'a>(Cow<'a, str>);
+pub struct LangTag<'a>(AnyStr<'a>);
 
 impl<'a> LangTag<'a> {
     /// Return a new [`LangTag`], assuming the argument is a valid language tag.
     ///
     /// ## Precondition
     /// It is the responsibility of the caller to ensure that `txt` is a valid language tag.
-    pub fn new_unchecked(txt: impl Into<Cow<'a, str>>) -> Self {
+    pub fn new_unchecked(txt: impl Into<AnyStr<'a>>) -> Self {
         LangTag(txt.into())
     }
 
-    /// Return the inner [`Cow<str>`](Cow).
-    pub fn unwrap(self) -> Cow<'a, str> {
+    /// Return the inner [`AnyStr`].
+    pub fn unwrap(self) -> AnyStr<'a> {
         self.0
     }
 
@@ -34,13 +36,13 @@ impl<'a> LangTag<'a> {
     /// ## Precondition
     /// It is the responsibility of the caller to ensure that `f`
     /// produces a valid language tag when its argument is a valid language tag.
-    pub fn map_unchecked(self, mut f: impl FnMut(Cow<'a, str>) -> Cow<'a, str>) -> Self {
+    pub fn map_unchecked(self, mut f: impl FnMut(AnyStr<'a>) -> AnyStr<'a>) -> Self {
         Self(f(self.0))
     }
 
     /// Borrow this [`LangTag`] as another [`LangTag`].
     pub fn borrowed(&self) -> LangTag<'_> {
-        LangTag::new_unchecked(self.0.as_ref())
+        LangTag(self.0.borrowed())
     }
 }
 
