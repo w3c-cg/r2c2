@@ -25,7 +25,7 @@ pub enum BaseDir {
 ///
 /// [literal]: https://www.w3.org/TR/rdf12-concepts/#dfn-literal
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]
-pub enum Literal<'a> {
+pub enum LiteralProxy<'a> {
     /// A literal with a specified datatype.
     Typed(AnyStr<'a>, Iri<'a>),
     /// A [language tagged string](https://www.w3.org/TR/rdf12-concepts/#dfn-language-tagged-string),
@@ -34,13 +34,13 @@ pub enum Literal<'a> {
     LanguageString(AnyStr<'a>, LangTag<'a>, Option<BaseDir>),
 }
 
-impl Literal<'_> {
-    /// Borrow this [`Literal`] as another [`Literal`].
-    pub fn borrowed(&self) -> Literal<'_> {
+impl LiteralProxy<'_> {
+    /// Borrow this [`LiteralProxy`] as another [`LiteralProxy`].
+    pub fn borrowed(&self) -> LiteralProxy<'_> {
         match self {
-            Literal::Typed(lex, iri) => Literal::Typed(lex.borrowed(), iri.borrowed()),
-            Literal::LanguageString(lex, lang_tag, base_dir) => {
-                Literal::LanguageString(lex.borrowed(), lang_tag.borrowed(), *base_dir)
+            LiteralProxy::Typed(lex, iri) => LiteralProxy::Typed(lex.borrowed(), iri.borrowed()),
+            LiteralProxy::LanguageString(lex, lang_tag, base_dir) => {
+                LiteralProxy::LanguageString(lex.borrowed(), lang_tag.borrowed(), *base_dir)
             }
         }
     }
@@ -48,8 +48,8 @@ impl Literal<'_> {
     /// [lexical form](https://www.w3.org/TR/rdf12-concepts/#dfn-lexical-form) of this literal
     pub fn lexical_form(&self) -> AnyStr<'_> {
         match self {
-            Literal::Typed(lex, ..) => lex,
-            Literal::LanguageString(lex, ..) => lex,
+            LiteralProxy::Typed(lex, ..) => lex,
+            LiteralProxy::LanguageString(lex, ..) => lex,
         }
         .borrowed()
     }
@@ -57,15 +57,15 @@ impl Literal<'_> {
     /// [datatype IRI](https://www.w3.org/TR/rdf12-concepts/#dfn-datatype-iri) of this literal
     pub fn datatype_iri(&self) -> Iri<'_> {
         match self {
-            Literal::Typed(_, iri) => iri.borrowed(),
-            Literal::LanguageString(_, _, None) => Iri::new_unchecked(RDF_LANG_STRING),
-            Literal::LanguageString(_, _, Some(_)) => Iri::new_unchecked(RDF_DIR_LANG_STRING),
+            LiteralProxy::Typed(_, iri) => iri.borrowed(),
+            LiteralProxy::LanguageString(_, _, None) => Iri::new_unchecked(RDF_LANG_STRING),
+            LiteralProxy::LanguageString(_, _, Some(_)) => Iri::new_unchecked(RDF_DIR_LANG_STRING),
         }
     }
 
     /// [language tag](https://www.w3.org/TR/rdf12-concepts/#dfn-language-tag) of this literal, if any
     pub fn language_tag(&self) -> Option<LangTag<'_>> {
-        if let Literal::LanguageString(_, tag, _) = self {
+        if let LiteralProxy::LanguageString(_, tag, _) = self {
             Some(tag.borrowed())
         } else {
             None
@@ -74,7 +74,7 @@ impl Literal<'_> {
 
     /// [base direction](https://www.w3.org/TR/rdf12-concepts/#dfn-base-direction) of this literal, if any
     pub fn base_direction(&self) -> Option<BaseDir> {
-        if let Literal::LanguageString(_, _, Some(dir)) = self {
+        if let LiteralProxy::LanguageString(_, _, Some(dir)) = self {
             Some(*dir)
         } else {
             None

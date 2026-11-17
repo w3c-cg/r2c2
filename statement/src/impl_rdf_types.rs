@@ -247,9 +247,9 @@ impl Object for rt::Object {
             rt::Term::Id(rt::Id::Iri(iri)) => ObjectProxy::Iri(Iri::new_unchecked(iri.as_str())),
             rt::Term::Literal(lit) => ObjectProxy::Literal(match &lit.type_ {
                 rt::LiteralType::Any(iri) => {
-                    Literal::Typed(lit.as_str().into(), Iri::new_unchecked(iri.as_str()))
+                    LiteralProxy::Typed(lit.as_str().into(), Iri::new_unchecked(iri.as_str()))
                 }
-                rt::LiteralType::LangString(lang_tag_buf) => Literal::LanguageString(
+                rt::LiteralType::LangString(lang_tag_buf) => LiteralProxy::LanguageString(
                     lit.as_str().into(),
                     LangTag::new_unchecked(lang_tag_buf.as_str()),
                     None,
@@ -267,21 +267,21 @@ impl<'a, T: Triple> TryFrom<ObjectProxy<'a, T>> for rt::Object {
             ObjectProxy::Iri(iri) => rt::Object::Id(rt::Id::Iri(rt::IriBuf::from(iri))),
             ObjectProxy::BlankNode(bnid) => rt::Object::Id(rt::Id::Blank(safe_bnode(bnid))),
             ObjectProxy::Literal(literal) => rt::Object::Literal(match literal {
-                Literal::Typed(lex, iri) => rt::Literal::new(
+                LiteralProxy::Typed(lex, iri) => rt::Literal::new(
                     lex.to_string(),
                     rt::LiteralType::Any(unsafe {
                         // SAFETY: iri is known to be a valid IRI
                         rt::IriBuf::new_unchecked(iri.unwrap().to_string())
                     }),
                 ),
-                Literal::LanguageString(lex, lang_tag, None) => rt::Literal::new(
+                LiteralProxy::LanguageString(lex, lang_tag, None) => rt::Literal::new(
                     lex.to_string(),
                     rt::LiteralType::LangString(unsafe {
                         // SAFETY: lang_tag is known to be a valid language tag
                         langtag::LangTagBuf::new_unchecked(lang_tag.unwrap().to_string())
                     }),
                 ),
-                Literal::LanguageString(_, _, Some(_)) => {
+                LiteralProxy::LanguageString(_, _, Some(_)) => {
                     Err("directional language strings are not supported by the crate rdf_types")?
                 }
             }),
@@ -304,9 +304,9 @@ impl Object for rt::LexicalObjectRef<'_> {
             rt::Term::Id(rt::Id::Iri(iri)) => ObjectProxy::Iri(Iri::new_unchecked(iri.as_str())),
             rt::Term::Literal(lit) => ObjectProxy::Literal(match &lit.type_ {
                 rt::LiteralType::Any(iri) => {
-                    Literal::Typed(lit.as_str().into(), Iri::new_unchecked(iri.as_str()))
+                    LiteralProxy::Typed(lit.as_str().into(), Iri::new_unchecked(iri.as_str()))
                 }
-                rt::LiteralType::LangString(lang_tag_buf) => Literal::LanguageString(
+                rt::LiteralType::LangString(lang_tag_buf) => LiteralProxy::LanguageString(
                     lit.as_str().into(),
                     LangTag::new_unchecked(lang_tag_buf.as_str()),
                     None,

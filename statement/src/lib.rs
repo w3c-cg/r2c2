@@ -7,7 +7,7 @@
 //! * [`Iri`], [`LangTag`]: wrappers around [`AnyStr`]s constraining their content;
 //! * [`BaseDir`]: a simple enum for representing [base direction]
 //! * [`SubjectKind`], [`ObjectKind`], [`GraphNameKind`]: simple enums representing the kinds of [RDF terms]: [IRI], [blank node], [literal] and [triple term]
-//! * [`SubjectProxy`], [`ObjectProxy`], [`GraphNameProxy`], [`Literal`]: complex enums conveying the inner information of the types respectively implementing [`Subject`], [`Object`], [`GraphName`], or representing RDF [literal]s.
+//! * [`SubjectProxy`], [`ObjectProxy`], [`GraphNameProxy`], [`LiteralProxy`]: complex enums conveying the inner information of the types respectively implementing [`Subject`], [`Object`], [`GraphName`], or representing RDF [literal]s.
 //!
 //!
 //! [triples]: https://www.w3.org/TR/rdf12-concepts/#dfn-rdf-triple

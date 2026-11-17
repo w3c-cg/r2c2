@@ -1,4 +1,4 @@
-use crate::{AnyStr, Iri, Literal, Triple};
+use crate::{AnyStr, Iri, LiteralProxy, Triple};
 
 /// A trait for [RDF terms] allowed in the [object] position of an [RDF triple].
 ///
@@ -67,8 +67,8 @@ pub trait Object {
         }
     }
 
-    /// If this object is a literal, return it as an [`Literal`], otherwise `None`.
-    fn as_literal(&self) -> Option<Literal<'_>> {
+    /// If this object is a literal, return it as an [`LiteralProxy`], otherwise `None`.
+    fn as_literal(&self) -> Option<LiteralProxy<'_>> {
         match self.as_object_proxy() {
             ObjectProxy::Literal(lit) => Some(lit),
             _ => None,
@@ -99,7 +99,7 @@ pub enum ObjectProxy<'a, T: Triple + 'a> {
     /// but concrete syntax usually do, so serializer may alter these identifiers.
     BlankNode(AnyStr<'a>),
     /// A [literal](https://www.w3.org/TR/rdf12-concepts/#dfn-literal)
-    Literal(Literal<'a>),
+    Literal(LiteralProxy<'a>),
     /// A [triple term](https://www.w3.org/TR/rdf12-concepts/#dfn-triple-term)
     Triple(T),
 }

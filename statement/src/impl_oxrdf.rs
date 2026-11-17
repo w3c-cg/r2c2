@@ -290,11 +290,15 @@ impl Object for ox::Term {
             ox::Term::NamedNode(named_node) => ObjectProxy::Iri(named_node.as_iri()),
             ox::Term::BlankNode(blank_node) => ObjectProxy::BlankNode(blank_node.as_str().into()),
             ox::Term::Literal(literal) => ObjectProxy::Literal(match literal.as_ref().destruct() {
-                (lex, None, None) => Literal::Typed(lex.into(), Iri::new_unchecked(XSD_STRING)),
-                (lex, _, Some(tag)) => {
-                    Literal::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                (lex, None, None) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(XSD_STRING))
                 }
-                (lex, Some(dt), _) => Literal::Typed(lex.into(), Iri::new_unchecked(dt.as_str())),
+                (lex, _, Some(tag)) => {
+                    LiteralProxy::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                }
+                (lex, Some(dt), _) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(dt.as_str()))
+                }
             }),
             ox::Term::Triple(triple) => ObjectProxy::Triple(triple),
         }
@@ -307,10 +311,10 @@ impl<'a, T: Triple> From<ObjectProxy<'a, T>> for ox::Term {
             ObjectProxy::Iri(iri) => ox::NamedNode::from(iri).into(),
             ObjectProxy::BlankNode(bnid) => safe_bnode(bnid).into(),
             ObjectProxy::Literal(literal) => match literal {
-                Literal::Typed(lex, iri) => {
+                LiteralProxy::Typed(lex, iri) => {
                     ox::Literal::new_typed_literal(lex.to_string(), iri).into()
                 }
-                Literal::LanguageString(lex, lang_tag, base_dir) => {
+                LiteralProxy::LanguageString(lex, lang_tag, base_dir) => {
                     if base_dir.is_some() {
                         panic!()
                         // Assuming here that oxrdf will eventually support base direction,
@@ -346,11 +350,15 @@ impl Object for ox::TermRef<'_> {
                 ObjectProxy::BlankNode(blank_node.as_str().into())
             }
             ox::TermRef::Literal(literal) => ObjectProxy::Literal(match literal.destruct() {
-                (lex, None, None) => Literal::Typed(lex.into(), Iri::new_unchecked(XSD_STRING)),
-                (lex, _, Some(tag)) => {
-                    Literal::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                (lex, None, None) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(XSD_STRING))
                 }
-                (lex, Some(dt), _) => Literal::Typed(lex.into(), Iri::new_unchecked(dt.as_str())),
+                (lex, _, Some(tag)) => {
+                    LiteralProxy::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                }
+                (lex, Some(dt), _) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(dt.as_str()))
+                }
             }),
             ox::TermRef::Triple(triple) => ObjectProxy::Triple(triple),
         }
