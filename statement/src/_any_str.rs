@@ -20,6 +20,15 @@ impl<'a> AnyStr<'a> {
     pub fn borrowed(&self) -> AnyStr<'_> {
         AnyStr::Ref(self.as_ref())
     }
+
+    /// Convert this [`AnyStr`] into a [`AnyStr`]`<'static>
+    pub fn into_owned(self) -> AnyStr<'static> {
+        match self {
+            Self::Ref(inner) => AnyStr::String(inner.to_string()),
+            Self::String(inner) => AnyStr::String(inner),
+            Self::Arc(inner) => AnyStr::Arc(inner),
+        }
+    }
 }
 
 impl AsRef<str> for AnyStr<'_> {
