@@ -8,7 +8,7 @@ use crate::{AnyStr, Iri, Literal, Triple};
 pub trait Object {
     /// The type representing [triple terms] for this implementation of [`Object`]
     ///
-    /// [triple term]: https://www.w3.org/TR/rdf12-concepts/#dfn-triple-term
+    /// [triple terms]: https://www.w3.org/TR/rdf12-concepts/#dfn-triple-term
     type Triple<'x>: Triple
     where
         Self: 'x;

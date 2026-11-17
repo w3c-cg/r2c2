@@ -20,7 +20,8 @@ pub enum BaseDir {
     Rtl,
 }
 
-/// A utility type representing an RDF [literal].
+/// An enum conveying the inner information of a value representing a [literal].
+/// The return type of [`Object::as_literal`](crate::Object::as_literal).
 ///
 /// [literal]: https://www.w3.org/TR/rdf12-concepts/#dfn-literal
 #[derive(Clone, Debug, Eq, Hash, PartialEq)]

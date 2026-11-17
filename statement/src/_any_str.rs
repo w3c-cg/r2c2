@@ -4,7 +4,7 @@ use std::{
     sync::Arc,
 };
 
-/// Wrapper for usual "string" types
+/// Wrapper for usual "string" types.
 #[derive(Clone, Debug, Eq)]
 pub enum AnyStr<'a> {
     /// An immutable reference to [`str`]
