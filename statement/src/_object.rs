@@ -84,15 +84,6 @@ pub trait Object {
             _ => None,
         }
     }
-
-    /// Whether this object is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
-    fn ground(&self) -> bool {
-        match self.object_kind() {
-            ObjectKind::Iri | ObjectKind::Literal => true,
-            ObjectKind::BlankNode => false,
-            ObjectKind::Triple => self.as_triple().unwrap().ground(),
-        }
-    }
 }
 
 /// An enum conveying the inner information of a value implementing [`Object`].
@@ -146,10 +137,6 @@ impl<T: Object> Object for &'_ T {
 
     fn object_kind(&self) -> ObjectKind {
         (*self).object_kind()
-    }
-
-    fn ground(&self) -> bool {
-        (*self).ground()
     }
 }
 

@@ -51,14 +51,6 @@ pub trait GraphName {
             _ => None,
         }
     }
-
-    /// Whether this graph_name is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
-    fn ground(&self) -> bool {
-        match self.graph_name_kind() {
-            GraphNameKind::Iri => true,
-            GraphNameKind::BlankNode => false,
-        }
-    }
 }
 
 /// An enum conveying the inner information of a value implementing [`GraphName`].
@@ -99,10 +91,6 @@ impl<T: GraphName> GraphName for &'_ T {
 
     fn graph_name_kind(&self) -> GraphNameKind {
         (*self).graph_name_kind()
-    }
-
-    fn ground(&self) -> bool {
-        (*self).ground()
     }
 }
 

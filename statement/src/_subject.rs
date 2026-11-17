@@ -49,14 +49,6 @@ pub trait Subject {
             _ => None,
         }
     }
-
-    /// Whether this subject is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
-    fn ground(&self) -> bool {
-        match self.subject_kind() {
-            SubjectKind::Iri => true,
-            SubjectKind::BlankNode => false,
-        }
-    }
 }
 
 /// An enum conveying the inner information of a value implementing [`Subject`].
@@ -97,10 +89,6 @@ impl<T: Subject> Subject for &'_ T {
 
     fn subject_kind(&self) -> SubjectKind {
         (*self).subject_kind()
-    }
-
-    fn ground(&self) -> bool {
-        (*self).ground()
     }
 }
 
