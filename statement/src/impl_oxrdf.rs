@@ -1,8 +1,15 @@
-//! Proof-of-concept implementation of this crate's traits for [`oxrdf`].
+//! **Example** implementation of this crate's traits for [`oxrdf`] 0.2.4.
 //!
-//! Only present with the `poc_impl` feature.
+//! <div class="warning">
 //!
-//! This module is developed as if [`oxrdf`] implemented RDF 1.2 completely and strictly,
+//! This module is only present with the `poc_impl` feature,
+//! which is **not** meant to be used by dependent crates.
+//! It is provided as an *example* of how 3rd party crates can implement R2C2 traits in their own types.
+//! It is expected that [`oxrdf`] will eventually provide such implementations.
+//!
+//! </div>
+//!
+//! This module is developed as if [`oxrdf`] 0.2.4 implemented RDF 1.2 completely and strictly,
 //! which is not entirely true:
 //! - [`oxrdf`] does not support base direction in literals, so it is not complete;
 //! - [`oxrdf`] with the `rdf-star` feature allows triple terms in the subject position, so it is not strict.
@@ -258,7 +265,7 @@ impl Predicate for ox::NamedNode {
 
 impl<'a> From<Iri<'a>> for ox::NamedNode {
     fn from(value: Iri<'a>) -> Self {
-        ox::NamedNode::new_unchecked(value.unwrap().into_owned())
+        ox::NamedNode::new_unchecked(value.unwrap().to_string())
     }
 }
 
@@ -283,11 +290,15 @@ impl Object for ox::Term {
             ox::Term::NamedNode(named_node) => ObjectProxy::Iri(named_node.as_iri()),
             ox::Term::BlankNode(blank_node) => ObjectProxy::BlankNode(blank_node.as_str().into()),
             ox::Term::Literal(literal) => ObjectProxy::Literal(match literal.as_ref().destruct() {
-                (lex, None, None) => Literal::Typed(lex.into(), Iri::new_unchecked(XSD_STRING)),
-                (lex, _, Some(tag)) => {
-                    Literal::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                (lex, None, None) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(XSD_STRING))
                 }
-                (lex, Some(dt), _) => Literal::Typed(lex.into(), Iri::new_unchecked(dt.as_str())),
+                (lex, _, Some(tag)) => {
+                    LiteralProxy::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                }
+                (lex, Some(dt), _) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(dt.as_str()))
+                }
             }),
             ox::Term::Triple(triple) => ObjectProxy::Triple(triple),
         }
@@ -300,10 +311,10 @@ impl<'a, T: Triple> From<ObjectProxy<'a, T>> for ox::Term {
             ObjectProxy::Iri(iri) => ox::NamedNode::from(iri).into(),
             ObjectProxy::BlankNode(bnid) => safe_bnode(bnid).into(),
             ObjectProxy::Literal(literal) => match literal {
-                Literal::Typed(lex, iri) => {
-                    ox::Literal::new_typed_literal(lex.into_owned(), iri).into()
+                LiteralProxy::Typed(lex, iri) => {
+                    ox::Literal::new_typed_literal(lex.to_string(), iri).into()
                 }
-                Literal::LanguageString(lex, lang_tag, base_dir) => {
+                LiteralProxy::LanguageString(lex, lang_tag, base_dir) => {
                     if base_dir.is_some() {
                         panic!()
                         // Assuming here that oxrdf will eventually support base direction,
@@ -313,8 +324,8 @@ impl<'a, T: Triple> From<ObjectProxy<'a, T>> for ox::Term {
                         // they should implement TryFrom instead.
                     }
                     ox::Literal::new_language_tagged_literal_unchecked(
-                        lex.into_owned(),
-                        lang_tag.unwrap().into_owned(),
+                        lex.to_string(),
+                        lang_tag.unwrap().to_string(),
                     )
                     .into()
                 }
@@ -339,11 +350,15 @@ impl Object for ox::TermRef<'_> {
                 ObjectProxy::BlankNode(blank_node.as_str().into())
             }
             ox::TermRef::Literal(literal) => ObjectProxy::Literal(match literal.destruct() {
-                (lex, None, None) => Literal::Typed(lex.into(), Iri::new_unchecked(XSD_STRING)),
-                (lex, _, Some(tag)) => {
-                    Literal::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                (lex, None, None) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(XSD_STRING))
                 }
-                (lex, Some(dt), _) => Literal::Typed(lex.into(), Iri::new_unchecked(dt.as_str())),
+                (lex, _, Some(tag)) => {
+                    LiteralProxy::LanguageString(lex.into(), LangTag::new_unchecked(tag), None)
+                }
+                (lex, Some(dt), _) => {
+                    LiteralProxy::Typed(lex.into(), Iri::new_unchecked(dt.as_str()))
+                }
             }),
             ox::TermRef::Triple(triple) => ObjectProxy::Triple(triple),
         }
@@ -407,13 +422,13 @@ impl GraphName for ox::NamedOrBlankNodeRef<'_> {
 
 /// This function converts an R2C2 bnode label into an OxRDF Blank Node,
 /// ensuring that bnode labels that are not valid SPARQL bnodeIds are correctly handled
-fn safe_bnode(bnid: std::borrow::Cow<str>) -> ox::BlankNode {
+fn safe_bnode(bnid: AnyStr<'_>) -> ox::BlankNode {
     use std::hash::{DefaultHasher, Hash, Hasher};
     let mut s = DefaultHasher::new();
     bnid.hash(&mut s);
     let h = s.finish();
 
-    ox::BlankNode::new(bnid.into_owned())
+    ox::BlankNode::new(bnid.to_string())
         .unwrap_or_else(|_| ox::BlankNode::new_from_unique_id(h as u128))
 }
 

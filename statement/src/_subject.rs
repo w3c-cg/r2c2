@@ -1,6 +1,4 @@
-use std::borrow::Cow;
-
-use crate::Iri;
+use crate::{AnyStr, Iri};
 
 /// A trait for [RDF terms] allowed in the [subject] position of an [RDF triple].
 ///
@@ -16,7 +14,7 @@ pub trait Subject {
     /// # Implementers
     /// A default implementation is provided for this method, based on [`Subject::as_subject_proxy`].
     /// It may be useful to override it, especially for types where the inner values of [`SubjectProxy`]
-    /// are allocated as owned [`Cow<str>`](std::borrow::Cow) rather than borrowed.
+    /// require additional allocation (e.g. [`AnyStr::String`]).
     fn subject_kind(&self) -> SubjectKind {
         match self.as_subject_proxy() {
             SubjectProxy::Iri(_) => SubjectKind::Iri,
@@ -43,18 +41,10 @@ pub trait Subject {
     }
 
     /// If this subject is a blank node, return its internal identifier, otherwise `None`.
-    fn as_blank_node(&self) -> Option<Cow<'_, str>> {
+    fn as_blank_node(&self) -> Option<AnyStr<'_>> {
         match self.as_subject_proxy() {
             SubjectProxy::BlankNode(bnid) => Some(bnid),
             _ => None,
-        }
-    }
-
-    /// Whether this subject is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
-    fn ground(&self) -> bool {
-        match self.subject_kind() {
-            SubjectKind::Iri => true,
-            SubjectKind::BlankNode => false,
         }
     }
 }
@@ -72,7 +62,7 @@ pub enum SubjectProxy<'a> {
     ///
     /// Note that this API does not impose any constraint on blank node identifiers,
     /// but concrete syntax usually do, so serializer may alter these identifiers.
-    BlankNode(Cow<'a, str>),
+    BlankNode(AnyStr<'a>),
 }
 
 /// An enum representing the different kinds of [RDF terms] that can be [subject].
@@ -98,10 +88,6 @@ impl<T: Subject> Subject for &'_ T {
     fn subject_kind(&self) -> SubjectKind {
         (*self).subject_kind()
     }
-
-    fn ground(&self) -> bool {
-        (*self).ground()
-    }
 }
 
 /// [`SubjectProxy`] implements the trait [`Subject`].
@@ -114,7 +100,7 @@ impl Subject for SubjectProxy<'_> {
     fn as_subject_proxy(&self) -> SubjectProxy<'_> {
         match self {
             SubjectProxy::Iri(iri) => SubjectProxy::Iri(iri.borrowed()),
-            SubjectProxy::BlankNode(cow) => SubjectProxy::BlankNode(Cow::from(cow.as_ref())),
+            SubjectProxy::BlankNode(anystr) => SubjectProxy::BlankNode(anystr.borrowed()),
         }
     }
 }

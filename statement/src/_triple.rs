@@ -41,11 +41,6 @@ pub trait Triple {
     ///
     /// [object]: https://www.w3.org/TR/rdf12-concepts/#dfn-object
     fn object(&self) -> Self::Object<'_>;
-
-    /// Whether this triple is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
-    fn ground(&self) -> bool {
-        self.subject().ground() && self.object().ground()
-    }
 }
 
 /// Any reference to a [`Triple`] also trivially implements [`Triple`]
@@ -110,20 +105,38 @@ impl<T: Triple> Triple for Box<T> {
     }
 }
 
-/// A utility empty type for indicating that a given implementation does not support triple terms.
+/// A utility empty type for indicating that a given implementation of [`Object`]
+/// does not support triple terms.
+///
+/// It is expected to be used as the associated type [`Object::Triple`].
 pub enum NeverTriple {}
 
 impl Triple for NeverTriple {
+    /// This is irrelevant, since [`NeverTriple`] can not be instantiated,
+    /// so it will never return a [`Subject`].
+    ///
+    /// We use [`SubjectProxy`](crate::SubjectProxy) here solely as a convenience,
+    /// because it happens to implement [`Subject`].
     type Subject<'x>
         = crate::SubjectProxy<'x>
     where
         Self: 'x;
 
+    /// This is irrelevant, since [`NeverTriple`] can not be instantiated,
+    /// so it will never return a [`Predicate`].
+    ///
+    /// We use [`Iri`](crate::Iri) here solely as a convenience,
+    /// because it happens to implement [`Predicate`].
     type Predicate<'x>
         = crate::Iri<'x>
     where
         Self: 'x;
 
+    /// This is irrelevant, since [`NeverTriple`] can not be instantiated,
+    /// so it will never return a [`Object`].
+    ///
+    /// We use [`ObjectProxy`](crate::ObjectProxy) here solely as a convenience,
+    /// because it happens to implement [`Object`].
     type Object<'x>
         = crate::ObjectProxy<'x, NeverTriple>
     where

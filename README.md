@@ -6,6 +6,12 @@ Community Group is to develop a **common API** for working with [RDF] in
 [Rust], published as a set of [library crates].
 The goal is to improve the interoperability of the RDF ecosystem in Rust.
 
+## `r2c2_statement`
+
+This crate provides traits representing the core notions of [RDF]
+(terms and statements), that other crates can implement and/or consume.
+
+
 [library crates]: https://doc.rust-lang.org/book/ch07-01-packages-and-crates.html
 [RDF]: https://www.w3.org/TR/rdf-primer/
 [Rust]: https://www.rust-lang.org/

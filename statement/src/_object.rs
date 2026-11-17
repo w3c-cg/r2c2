@@ -1,6 +1,4 @@
-use std::borrow::Cow;
-
-use crate::{Iri, Literal, Triple};
+use crate::{AnyStr, Iri, LiteralProxy, Triple};
 
 /// A trait for [RDF terms] allowed in the [object] position of an [RDF triple].
 ///
@@ -10,7 +8,7 @@ use crate::{Iri, Literal, Triple};
 pub trait Object {
     /// The type representing [triple terms] for this implementation of [`Object`]
     ///
-    /// [triple term]: https://www.w3.org/TR/rdf12-concepts/#dfn-triple-term
+    /// [triple terms]: https://www.w3.org/TR/rdf12-concepts/#dfn-triple-term
     type Triple<'x>: Triple
     where
         Self: 'x;
@@ -23,7 +21,7 @@ pub trait Object {
     /// # Implementers
     /// A default implementation is provided for this method, based on [`Object::as_object_proxy`].
     /// It may be useful to override it, especially for types where the inner values of [`ObjectProxy`]
-    /// are allocated as owned [`Cow<str>`](std::borrow::Cow) rather than borrowed.
+    /// require additional allocation (e.g. [`AnyStr::String`]).
     fn object_kind(&self) -> ObjectKind {
         match self.as_object_proxy() {
             ObjectProxy::Iri(_) => ObjectKind::Iri,
@@ -62,15 +60,15 @@ pub trait Object {
     }
 
     /// If this object is a blank node, return its internal identifier, otherwise `None`.
-    fn as_blank_node(&self) -> Option<Cow<'_, str>> {
+    fn as_blank_node(&self) -> Option<AnyStr<'_>> {
         match self.as_object_proxy() {
             ObjectProxy::BlankNode(bnid) => Some(bnid),
             _ => None,
         }
     }
 
-    /// If this object is a literal, return it as an [`Literal`], otherwise `None`.
-    fn as_literal(&self) -> Option<Literal<'_>> {
+    /// If this object is a literal, return it as an [`LiteralProxy`], otherwise `None`.
+    fn as_literal(&self) -> Option<LiteralProxy<'_>> {
         match self.as_object_proxy() {
             ObjectProxy::Literal(lit) => Some(lit),
             _ => None,
@@ -82,15 +80,6 @@ pub trait Object {
         match self.as_object_proxy() {
             ObjectProxy::Triple(tr) => Some(tr),
             _ => None,
-        }
-    }
-
-    /// Whether this object is [ground](https://www.w3.org/TR/rdf12-concepts/#dfn-ground).
-    fn ground(&self) -> bool {
-        match self.object_kind() {
-            ObjectKind::Iri | ObjectKind::Literal => true,
-            ObjectKind::BlankNode => false,
-            ObjectKind::Triple => self.as_triple().unwrap().ground(),
         }
     }
 }
@@ -108,9 +97,9 @@ pub enum ObjectProxy<'a, T: Triple + 'a> {
     ///
     /// Note that this API does not impose any constraint on blank node identifiers,
     /// but concrete syntax usually do, so serializer may alter these identifiers.
-    BlankNode(Cow<'a, str>),
+    BlankNode(AnyStr<'a>),
     /// A [literal](https://www.w3.org/TR/rdf12-concepts/#dfn-literal)
-    Literal(Literal<'a>),
+    Literal(LiteralProxy<'a>),
     /// A [triple term](https://www.w3.org/TR/rdf12-concepts/#dfn-triple-term)
     Triple(T),
 }
@@ -147,10 +136,6 @@ impl<T: Object> Object for &'_ T {
     fn object_kind(&self) -> ObjectKind {
         (*self).object_kind()
     }
-
-    fn ground(&self) -> bool {
-        (*self).ground()
-    }
 }
 
 /// [`ObjectProxy`] implements the trait [`Object`].
@@ -168,7 +153,7 @@ impl<T: Triple> Object for ObjectProxy<'_, T> {
     fn as_object_proxy(&self) -> ObjectProxy<'_, &T> {
         match self {
             ObjectProxy::Iri(iri) => ObjectProxy::Iri(iri.borrowed()),
-            ObjectProxy::BlankNode(cow) => ObjectProxy::BlankNode(Cow::from(cow.as_ref())),
+            ObjectProxy::BlankNode(anystr) => ObjectProxy::BlankNode(anystr.borrowed()),
             ObjectProxy::Literal(literal) => ObjectProxy::Literal(literal.borrowed()),
             ObjectProxy::Triple(triple) => ObjectProxy::Triple(triple),
         }
